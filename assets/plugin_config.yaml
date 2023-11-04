@@ -1,0 +1,22 @@
+# This configuration file is necessary for constants used
+#  in the DynamicCraftPlugin
+
+urls:
+  test: true
+  uat: http://102.218.0.4:4330 #https://uat.tsedeybank.com.et # https://uat.craftsilicon.com #
+  live: https://tsedeychannels.tsedeybank.com.et:441
+  tokenUrl: /ElmaV4Auth/api/auth/app #/ElmaV4Auth/api/auth/apps
+
+request:
+  trxSource: APP
+  bankId: "31"
+  appName: TSEDEY
+  country: ETHIOPIA 
+  bankCustomerID: "25100002"
+  countryCode: "251"
+  countryIsoCode: "ET"
+
+appProperties:
+  appLabel: Tsedey Mobile Banking UAT
+  appPrimaryColor: 17C37B
+  appSecondaryColor: F6D703
