@@ -6,6 +6,9 @@ import 'package:flutter/services.dart';
 import 'package:pinput/pinput.dart';
 import 'package:tsedeybnk/src/ui/other/app_loader.dart';
 
+import 'package:vibration/vibration.dart';
+
+import '../../theme/app_theme.dart';
 import 'login_screen.dart';
 
 class OTPScreen extends StatefulWidget {
@@ -74,76 +77,121 @@ class _OTPScreenState extends State<OTPScreen> {
     ));
 
     return Scaffold(
-      body: SafeArea(
-          child: Container(
-        height: double.infinity,
-        width: double.infinity,
-        padding: const EdgeInsets.symmetric(horizontal: 22),
-        child: Column(
-          mainAxisSize: MainAxisSize.max,
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            const Align(
-                alignment: Alignment.centerLeft,
-                child: Text(
-                  "Enter OTP\nsent via email or sms",
-                  style: TextStyle(color: Colors.white, fontSize: 28),
-                )),
-            Expanded(
-                child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Pinput(
-                  length: 6,
-                  controller: _otpController,
-                  autofocus: true,
-                  obscureText: true,
-                  defaultPinTheme: PinTheme(
-                      height: 44,
-                      width: 44,
-                      textStyle: const TextStyle(
-                          fontSize: 20, fontWeight: FontWeight.bold),
-                      padding: const EdgeInsets.all(4),
-                      decoration: BoxDecoration(
-                          color: Colors.white,
-                          border: Border.all(color: Colors.white),
-                          borderRadius:
-                              const BorderRadius.all(Radius.circular(4)))),
-                  forceErrorState: true,
-                  pinputAutovalidateMode: PinputAutovalidateMode.onSubmit,
-                  onCompleted: (pin) {
-                    _verifyOTP(pin);
-                  },
-                ),
-                const SizedBox(
-                  height: 44,
-                ),
-                if (_isLoading) AppLoader(),
-                const SizedBox(
-                  height: 12,
-                ),
-                Center(
-                    child: InkWell(
-                        onTap: _isLoading || _timerCount != 0
-                            ? null
-                            : () {
-                                _resendOtp();
-                              },
-                        child: Text(
-                          "Resend OTP",
-                          style: TextStyle(color: Colors.grey[200]),
-                        ))),
-                const SizedBox(
-                  height: 24,
-                ),
-                Text(_stopwatchText)
-              ],
-            ))
-          ],
-        ),
-      )),
-      backgroundColor: Theme.of(context).primaryColor,
-    );
+        body: AnnotatedRegion<SystemUiOverlayStyle>(
+            value: const SystemUiOverlayStyle(
+                statusBarColor: Colors.transparent,
+                statusBarBrightness: Brightness.light,
+                statusBarIconBrightness: Brightness.dark),
+            child: Scaffold(
+              body: SizedBox(
+                  height: double.infinity,
+                  width: double.infinity,
+                  child: Stack(
+                    children: [
+                      Image.asset(
+                        "assets/img/bank_bg.png",
+                        height: MediaQuery.sizeOf(context).height,
+                        width: MediaQuery.sizeOf(context).width,
+                        fit: BoxFit.cover,
+                      ),
+                      Positioned(
+                          bottom: 0,
+                          left: 0,
+                          right: 0,
+                          child: Container(
+                            width: double.infinity,
+                            height:
+                                (MediaQuery.sizeOf(context).height / 2) + 88,
+                            decoration: const BoxDecoration(
+                                image: DecorationImage(
+                                    image: AssetImage(
+                                      "assets/img/login_bg.png",
+                                    ),
+                                    fit: BoxFit.cover)),
+                            margin: EdgeInsets.zero,
+                            child: Padding(
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 20,
+                                ),
+                                child: SingleChildScrollView(
+                                    child: Column(
+                                  crossAxisAlignment:
+                                      CrossAxisAlignment.stretch,
+                                  mainAxisSize: MainAxisSize.max,
+                                  children: [
+                                    // Image.asset(
+                                    //     "assets/img/login_eclipse.png",
+                                    //     height: 150,
+                                    //     width: 150,
+                                    //     fit: BoxFit.contain),
+                                    const SizedBox(
+                                      height: 164,
+                                    ),
+                                    const Text(
+                                      "Enter OTP sent to your mobile/sms to activate account",
+                                      style: TextStyle(
+                                          color: Colors.grey, fontSize: 18),
+                                    ),
+                                    const SizedBox(
+                                      height: 12,
+                                    ),
+                                    Pinput(
+                                      obscuringCharacter: "*",
+                                      obscureText: true,
+                                      length: 6,
+                                      controller: _otpController,
+                                      defaultPinTheme: PinTheme(
+                                          height: 60,
+                                          width: 60,
+                                          textStyle: TextStyle(
+                                              color: APIService.appPrimaryColor,
+                                              fontSize: 24,
+                                              fontWeight: FontWeight.bold),
+                                          padding: const EdgeInsets.all(4),
+                                          decoration: BoxDecoration(
+                                              border: Border.all(
+                                                  color: AppTheme.primaryColor),
+                                              borderRadius:
+                                                  const BorderRadius.all(
+                                                      Radius.circular(12)))),
+                                      forceErrorState: true,
+                                      pinputAutovalidateMode:
+                                          PinputAutovalidateMode.onSubmit,
+                                      onCompleted: (pin) {
+                                        // _login(pin);
+                                      },
+                                    ),
+                                    const SizedBox(
+                                      height: 44,
+                                    ),
+                                    _isLoading
+                                        ? AppLoader(
+                                            useWhite: false,
+                                          )
+                                        : ElevatedButton(
+                                            onPressed: _isLoading
+                                                ? null
+                                                : () {
+                                                    if (_otpController
+                                                            .text.isEmpty ||
+                                                        _otpController.length !=
+                                                            6) {
+                                                      CommonUtils.showToast(
+                                                          "Incorrect OTP!");
+                                                      Vibration.vibrate();
+                                                      return;
+                                                    }
+                                                    _verifyOTP(
+                                                        _otpController.text);
+                                                  },
+                                            child: const Text("Verify OTP"))
+                                  ],
+                                ))),
+                          ))
+                    ],
+                  )),
+              backgroundColor: Theme.of(context).primaryColor,
+            )));
   }
 
   @override

@@ -5,6 +5,7 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
+import 'package:tsedeybnk/src/theme/app_theme.dart';
 
 import '../../appstate/app_state.dart';
 
@@ -33,13 +34,13 @@ class _AccountsWidgetState extends State<AccountsWidget> {
   Widget build(BuildContext context) => SizedBox(
       width: double.infinity,
       child: SizedBox(
-          height: 220,
+          height: 250,
           width: double.infinity,
           child: Column(children: [
             CarouselSlider.builder(
                 carouselController: _controller,
                 options: CarouselOptions(
-                  height: 184,
+                  height: 200,
                   viewportFraction: 0.9,
                   initialPage: 0,
                   enableInfiniteScroll: false,
@@ -120,143 +121,124 @@ class _BankAccountWidgetState extends State<BankAccountWidget> {
 
   @override
   Widget build(BuildContext context) => Material(
-      elevation: 4,
+      elevation: 0,
       borderRadius: const BorderRadius.all(Radius.circular(12)),
       child: Container(
-          height: 184,
-          width: double.infinity,
-          decoration: const BoxDecoration(
-              image: DecorationImage(
-                  image: AssetImage(
-                    "assets/img/account_bg.png",
-                  ),
-                  opacity: 2,
-                  fit: BoxFit.cover),
-              borderRadius: BorderRadius.all(Radius.circular(12))),
-          child: Stack(
-            children: [
-              Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 14),
+        height: 200,
+        width: double.infinity,
+        decoration: const BoxDecoration(
+            color: Colors.amber,
+            image: DecorationImage(
+                image: AssetImage(
+                  "assets/img/card.png",
+                ),
+                fit: BoxFit.cover),
+            borderRadius: BorderRadius.all(Radius.circular(12))),
+        child: SizedBox(
+            width: double.infinity,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const SizedBox(
+                  height: 24,
+                ),
+                const Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 14),
+                    child: Text(
+                      "Available Balance",
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 16,
+                      ),
+                    )),
+                const SizedBox(
+                  height: 16,
+                ),
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Expanded(
+                        flex: 8,
+                        child: Container(
+                            padding: const EdgeInsets.all(4),
+                            child: Center(
+                                child: Text(
+                              balanceHidden
+                                  ? balancePlaceHolder
+                                  : StringUtil
+                                      .formatNumberWithThousandsSeparator(
+                                          accountsAndBalances[widget
+                                                  .bankAccount.bankAccountId] ??
+                                              "Balance unavailable"),
+                              style: TextStyle(
+                                  fontSize: 28,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.red[50]),
+                            )))),
+                    Expanded(
+                        flex: 2,
+                        child: accountBalanceError
+                            ? IconButton(
+                                onPressed: () {
+                                  // _getAccountBalance();
+                                },
+                                icon: const Row(
+                                  children: [
+                                    Icon(
+                                      Icons.replay_outlined,
+                                      size: 34,
+                                      color: Colors.grey,
+                                    ),
+                                    Text(
+                                      "Retry",
+                                      style: TextStyle(color: Colors.white),
+                                    ),
+                                  ],
+                                ))
+                            : IconButton(
+                                onPressed: () async {
+                                  setState(() {
+                                    balanceHidden = !balanceHidden;
+                                  });
+                                  // if (!balanceHidden) {
+                                  //   await _getAccountBalance();
+                                  // }
+                                },
+                                icon: Icon(
+                                  balanceHidden
+                                      ? Icons.visibility
+                                      : Icons.visibility_off,
+                                  size: 34,
+                                  color: Colors.white,
+                                )))
+                  ],
+                ),
+                const Spacer(),
+                Container(
+                  height: 55,
                   width: double.infinity,
+                  decoration: const BoxDecoration(
+                      color: Color(0xff121826),
+                      borderRadius: BorderRadius.only(
+                          bottomLeft: Radius.circular(12),
+                          bottomRight: Radius.circular(12))),
+                  padding: const EdgeInsets.symmetric(horizontal: 14),
                   child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const Text(
-                        "Balance",
-                        style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 22,
-                            fontWeight: FontWeight.w600),
-                      ),
-                      const SizedBox(
-                        height: 8,
-                      ),
-                      Row(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          Expanded(
-                              flex: 7,
-                              child: Container(
-                                  padding: const EdgeInsets.all(4),
-                                  decoration: BoxDecoration(
-                                      color: const Color(0xff37b0b6)
-                                          .withOpacity(.5),
-                                      borderRadius: BorderRadius.circular(4)),
-                                  child: Center(
-                                      child: Text(
-                                    balanceHidden
-                                        ? balancePlaceHolder
-                                        : StringUtil
-                                            .formatNumberWithThousandsSeparator(
-                                                accountsAndBalances[widget
-                                                        .bankAccount
-                                                        .bankAccountId] ??
-                                                    "Balance unavailable"),
-                                    style: TextStyle(
-                                        fontSize: 20,
-                                        fontWeight: FontWeight.bold,
-                                        color: Colors.red[50]),
-                                  )))),
-                          Expanded(
-                              flex: 3,
-                              child: accountBalanceError
-                                  ? IconButton(
-                                      onPressed: () {
-                                        // _getAccountBalance();
-                                      },
-                                      icon: const Row(
-                                        children: [
-                                          Icon(
-                                            Icons.replay_outlined,
-                                            size: 34,
-                                            color: Colors.grey,
-                                          ),
-                                          Text(
-                                            "Retry",
-                                            style:
-                                                TextStyle(color: Colors.white),
-                                          ),
-                                        ],
-                                      ))
-                                  : IconButton(
-                                      onPressed: () async {
-                                        setState(() {
-                                          balanceHidden = !balanceHidden;
-                                        });
-                                        // if (!balanceHidden) {
-                                        //   await _getAccountBalance();
-                                        // }
-                                      },
-                                      icon: Icon(
-                                        balanceHidden
-                                            ? Icons.visibility_off
-                                            : Icons.visibility,
-                                        size: 34,
-                                        color: Colors.white,
-                                      )))
-                        ],
-                      ),
-                      const SizedBox(
-                        height: 24,
-                      ),
-                      Text(
-                        "Account: ${widget.bankAccount.bankAccountId.replaceRange(4, 9, "****")}",
-                        style: const TextStyle(
-                          fontSize: 14,
-                          color: Colors.white,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                          widget.bankAccount.bankAccountId
+                              .replaceRange(4, 9, "****"),
+                          style: TextStyle(
+                              fontSize: 20, color: AppTheme.secondaryAccent),
                         ),
-                      ),
-                      const SizedBox(
-                        height: 4,
-                      ),
-                      Text(
-                        "Date/Time: ${getDateTime()}",
-                        style: const TextStyle(
-                          fontSize: 14,
-                          color: Colors.white,
-                        ),
-                      )
-                    ],
-                  )),
-              balanceLoading
-                  ? SpinKitWave(
-                      itemBuilder: (BuildContext context, int index) {
-                        return DecoratedBox(
-                          decoration: BoxDecoration(
-                            color: index.isEven
-                                ? APIService.appPrimaryColor
-                                : APIService.appSecondaryColor,
-                          ),
-                        );
-                      },
-                    ).frosted(
-                      blur: 2,
-                      borderRadius: BorderRadius.circular(12),
-                    )
-                  : const SizedBox()
-            ],
-          )));
+                      ]),
+                )
+              ],
+            )),
+      ));
 
   String getDateTime() {
     DateTime now = DateTime.now();

@@ -7,7 +7,6 @@ import 'package:tsedeybnk/src/appstate/app_state.dart';
 import 'package:tsedeybnk/src/ui/home/home_tab.dart';
 import 'package:tsedeybnk/src/ui/home/my_bank_screen.dart';
 import 'package:tsedeybnk/src/ui/home/profile_tab.dart';
-import 'package:tsedeybnk/src/ui/home/recents_tab.dart';
 import 'package:tsedeybnk/src/ui/home/settings_screen.dart';
 
 import '../../utils/utils.dart';
@@ -26,26 +25,24 @@ class _DashboardScreenState extends State<DashboardScreen> {
   List<ModuleItem> mainmodules = [];
   List<BottomNavigationBarItem> navItems = [
     const BottomNavigationBarItem(
-      icon: Icon(Icons.home),
+      activeIcon: BarIcon(image: "activehome.png"),
+      icon: BarIcon(image: "home.png"),
       label: 'Home',
     ),
     const BottomNavigationBarItem(
-      icon: Icon(Icons.account_balance),
+      activeIcon: BarIcon(image: "activemybank.png"),
+      icon: BarIcon(image: "mybank.png"),
       label: 'My Bank',
     ),
     const BottomNavigationBarItem(
-      icon: Icon(Icons.receipt_long_sharp),
-      label: 'Recent',
-    ),
-    const BottomNavigationBarItem(
-      icon: Icon(Icons.person),
-      label: 'Profile',
+      activeIcon: BarIcon(image: "activesettings.png"),
+      icon: BarIcon(image: "settings.png"),
+      label: 'Settings',
     ),
   ];
   List<Widget> navWidgets = [
     const HomeTab(),
     const MyBankTab(),
-    RecentsTab(),
     const ProfileTab()
   ];
 
@@ -60,9 +57,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
   }
 
   getCustomerDetails() async {
-    name = await _profileRepo.getUserInfo(UserAccountData.FirstName) +
-        " " +
-        await _profileRepo.getUserInfo(UserAccountData.LastName);
+    name = await _profileRepo.getUserInfo(UserAccountData.FirstName);
     setCustomerName(name);
   }
 
@@ -100,11 +95,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
                         child: SafeArea(
                             child: Column(
                           children: [
-                            _selectedIndex == 3
-                                ? const SizedBox()
-                                : Header(
-                                    firstName: name,
-                                  ),
                             Expanded(
                                 child: navWidgets[_selectedIndex]
                                     .animate(
@@ -122,11 +112,11 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 type: BottomNavigationBarType.fixed,
                 selectedFontSize: 14,
                 elevation: 0,
-                backgroundColor: Theme.of(context).primaryColor,
+                backgroundColor: Colors.white,
                 // selectedLabelStyle:
                 //     const TextStyle(fontWeight: FontWeight.w600),
-                unselectedItemColor: Colors.white,
-                selectedItemColor: Colors.grey[600],
+                unselectedItemColor: Colors.black,
+                selectedItemColor: APIService.appPrimaryColor,
                 currentIndex: _selectedIndex,
                 onTap: _onNavItemSelect,
               ),
@@ -140,6 +130,20 @@ class _DashboardScreenState extends State<DashboardScreen> {
   }
 }
 
+class BarIcon extends StatelessWidget {
+  final String image;
+
+  const BarIcon({super.key, required this.image});
+
+  @override
+  Widget build(BuildContext context) => Image.asset(
+        "assets/img/$image",
+        height: 28,
+        width: 28,
+        fit: BoxFit.contain,
+      );
+}
+
 class Header extends StatelessWidget {
   final String firstName;
   bool isProfileSettings = false;
@@ -147,16 +151,10 @@ class Header extends StatelessWidget {
   Header({required this.firstName, this.isProfileSettings = false, super.key});
 
   @override
-  Widget build(BuildContext context) => Row(
+  Widget build(BuildContext context) => Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 14),
+      child: Row(
         children: [
-          Image.asset(
-            "assets/launcher.png",
-            height: 64,
-            width: 64,
-          ),
-          const SizedBox(
-            width: 15,
-          ),
           isProfileSettings
               ? const Text(
                   "Profile Settings",
@@ -166,19 +164,21 @@ class Header extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      Util.getGreeting(),
+                      "Hello $firstName",
                       style: const TextStyle(
                           fontSize: 24, fontWeight: FontWeight.w600),
                     ),
                     const SizedBox(
                       height: 4,
                     ),
-                    Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 4),
-                        child: Text(
-                          firstName,
-                          style: const TextStyle(fontSize: 18),
-                        ))
+                    Text(
+                      Util.getGreeting().toUpperCase(),
+                      style: const TextStyle(
+                          color: Colors.grey, fontWeight: FontWeight.bold),
+                    ),
+                    const SizedBox(
+                      height: 4,
+                    ),
                   ],
                 ),
           const Spacer(),
@@ -192,5 +192,5 @@ class Header extends StatelessWidget {
                 color: Theme.of(context).primaryColor,
               ))
         ],
-      );
+      ));
 }

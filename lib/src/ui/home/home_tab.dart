@@ -2,6 +2,7 @@ import 'package:craft_dynamic/craft_dynamic.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:provider/provider.dart';
+import 'package:tsedeybnk/src/ui/home/dashboard_screen.dart';
 
 import '../../appstate/app_state.dart';
 import 'accounts.dart';
@@ -17,6 +18,7 @@ class HomeTab extends StatefulWidget {
 class _HomeTabState extends State<HomeTab> {
   List<BankAccount> accounts = [];
   List<ModuleItem> mainmodules = [];
+  String name = "";
 
   final _profileRepo = ProfileRepository();
   final _sessionManager = SessionRepository();
@@ -27,6 +29,16 @@ class _HomeTabState extends State<HomeTab> {
     super.initState();
     _sessionManager.startSession();
     getBankAccounts();
+    getCustomerDetails();
+  }
+
+  getCustomerDetails() async {
+    name = await _profileRepo.getUserInfo(UserAccountData.FirstName);
+    setCustomerName(name);
+  }
+
+  void setCustomerName(String name) {
+    Provider.of<AppState>(context, listen: false).setCustomerName(name);
   }
 
   getBankAccounts() async {
@@ -50,6 +62,12 @@ class _HomeTabState extends State<HomeTab> {
             child: Column(
           children: [
             const SizedBox(
+              height: 24,
+            ),
+            Header(
+              firstName: name,
+            ),
+            const SizedBox(
               height: 28,
             ),
             state.isLoadingHome || accounts.isEmpty
@@ -65,7 +83,7 @@ class _HomeTabState extends State<HomeTab> {
                     accounts: accounts,
                   ),
             const SizedBox(
-              height: 4,
+              height: 12,
             ),
             !state.isLoadingHome && mainmodules.isNotEmpty
                 ? MainModules(

@@ -35,28 +35,55 @@ class _MyBankScreenState extends State<MyBankTab> {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisSize: MainAxisSize.max,
-        children: [
-          const SizedBox(
-            height: 16,
-          ),
-          Expanded(
-            child: ListView.separated(
-              itemCount: modules.length,
-              itemBuilder: (context, index) {
-                return ListItem(moduleItem: modules[index]);
-              },
-              separatorBuilder: (BuildContext context, int index) =>
-                  const Divider(
-                color: Colors.white,
-                height: 4,
-                thickness: 1,
+    return SingleChildScrollView(
+        padding: const EdgeInsets.symmetric(horizontal: 14),
+        child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.max,
+            children: [
+              const SizedBox(
+                height: 24,
               ),
-            ).animate().moveY(duration: 700.ms, begin: 100, end: 0),
-          )
-        ]);
+              Row(children: [
+                IconButton(
+                    onPressed: () {}, icon: const Icon(Icons.arrow_back)),
+                const SizedBox(
+                  width: 12,
+                ),
+                const Text(
+                  "My Bank",
+                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                )
+              ]),
+              const SizedBox(
+                height: 16,
+              ),
+              Card(
+                  elevation: 0,
+                  child: GridView.builder(
+                    shrinkWrap: true,
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 4, vertical: 8),
+                    physics: const NeverScrollableScrollPhysics(),
+                    itemCount: modules.length,
+                    gridDelegate:
+                        const SliverGridDelegateWithFixedCrossAxisCount(
+                            childAspectRatio: 0.7,
+                            crossAxisCount: 4,
+                            crossAxisSpacing: 2,
+                            mainAxisSpacing: 12),
+                    itemBuilder: (context, index) {
+                      return ListItem(moduleItem: modules[index]);
+                    },
+                  )),
+              const SizedBox(
+                height: 24,
+              ),
+              const Text(
+                "Transactions",
+                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+              )
+            ]));
   }
 }
 
@@ -76,72 +103,40 @@ class ListItem extends StatelessWidget {
           ModuleUtil.onItemClick(moduleItem, context);
         },
         child: Padding(
-            padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 14),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 4),
+            child: Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                Expanded(
-                  flex: 1,
-                  child: CachedNetworkImage(
-                    height: 58,
-                    width: 58,
-                    fit: BoxFit.contain,
-                    imageUrl: moduleItem.moduleUrl ?? "",
-                    progressIndicatorBuilder:
-                        (context, url, downloadProgress) => SpinKitPulse(
-                      itemBuilder: (BuildContext context, int index) {
-                        return DecoratedBox(
-                          decoration: BoxDecoration(
-                            color: index.isEven
-                                ? APIService.appPrimaryColor
-                                : APIService.appSecondaryColor,
-                          ),
-                        );
-                      },
-                    ),
-                    errorWidget: (context, url, error) => Icon(
-                      Icons.error,
-                      color: Theme.of(context).primaryColor,
-                    ),
+                CachedNetworkImage(
+                  height: 40,
+                  width: 40,
+                  fit: BoxFit.contain,
+                  imageUrl: moduleItem.moduleUrl ?? "",
+                  progressIndicatorBuilder: (context, url, downloadProgress) =>
+                      SpinKitPulse(
+                    itemBuilder: (BuildContext context, int index) {
+                      return DecoratedBox(
+                        decoration: BoxDecoration(
+                          color: index.isEven
+                              ? APIService.appPrimaryColor
+                              : APIService.appSecondaryColor,
+                        ),
+                      );
+                    },
+                  ),
+                  errorWidget: (context, url, error) => Icon(
+                    Icons.error,
+                    color: Theme.of(context).primaryColor,
                   ),
                 ),
-                Expanded(
-                    flex: 8,
-                    child: Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 14),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              moduleItem.moduleName,
-                              style: TextStyle(
-                                  color: Theme.of(context).primaryColor,
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.bold),
-                            ),
-                            moduleItem.moduleDescription.toString().isEmpty ||
-                                    moduleItem.moduleDescription == null
-                                ? const SizedBox()
-                                : Column(
-                                    children: [
-                                      const SizedBox(
-                                        height: 4,
-                                      ),
-                                      Text(
-                                        moduleItem.moduleDescription ?? "",
-                                        overflow: TextOverflow.ellipsis,
-                                      )
-                                    ],
-                                  )
-                          ],
-                        ))),
-                Expanded(
-                    flex: 1,
-                    child: Icon(
-                      Icons.arrow_forward_ios,
-                      color: Theme.of(context).primaryColor,
-                    ))
+                const SizedBox(
+                  height: 12,
+                ),
+                Text(
+                  moduleItem.moduleName,
+                  textAlign: TextAlign.center,
+                  style: const TextStyle(fontWeight: FontWeight.bold),
+                ),
               ],
             )));
   }

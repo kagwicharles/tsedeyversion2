@@ -19,13 +19,6 @@ class MainModules extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  const Text(
-                    "My services",
-                    style: TextStyle(fontWeight: FontWeight.w600, fontSize: 16),
-                  ),
-                  const SizedBox(
-                    height: 12,
-                  ),
                   GridView.builder(
                       shrinkWrap: true,
                       itemCount: mainmodules.length,
@@ -33,8 +26,8 @@ class MainModules extends StatelessWidget {
                       padding: const EdgeInsets.symmetric(horizontal: 8),
                       gridDelegate:
                           const SliverGridDelegateWithFixedCrossAxisCount(
-                              childAspectRatio: 1.7,
-                              crossAxisCount: 2,
+                              childAspectRatio: 0.7,
+                              crossAxisCount: 4,
                               mainAxisSpacing: 8,
                               crossAxisSpacing: 2),
                       itemBuilder: (BuildContext context, index) {
@@ -42,22 +35,23 @@ class MainModules extends StatelessWidget {
                         var image = mainmodules[index].moduleUrl;
                         var title = mainmodules[index].moduleName;
 
-                        return Card(
-                            elevation: 1,
-                            shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(8)),
-                            child: InkWell(
-                                borderRadius:
-                                    const BorderRadius.all(Radius.circular(8)),
-                                onTap: () {
-                                  ModuleUtil.onItemClick(
-                                      mainmodules[index], context);
-                                },
-                                child: Row(
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    CachedNetworkImage(
+                        return InkWell(
+                            highlightColor: Colors.transparent,
+                            splashColor: Colors.transparent,
+                            borderRadius:
+                                const BorderRadius.all(Radius.circular(8)),
+                            onTap: () {
+                              ModuleUtil.onItemClick(
+                                  mainmodules[index], context);
+                            },
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                CircleAvatar(
+                                    radius: 40,
+                                    backgroundColor: Colors.white,
+                                    child: CachedNetworkImage(
                                       imageUrl: image ?? "",
                                       placeholder: (context, url) =>
                                           SpinKitPulse(
@@ -79,17 +73,19 @@ class MainModules extends StatelessWidget {
                                           module.menuProperties?.iconSize ?? 40,
                                       width:
                                           module.menuProperties?.iconSize ?? 40,
-                                    ),
-                                    const SizedBox(
-                                      width: 12,
-                                    ),
-                                    Flexible(
-                                        child: Text(
-                                      title,
-                                      textAlign: TextAlign.center,
-                                    ))
-                                  ],
-                                )));
+                                    )),
+                                const SizedBox(
+                                  height: 24,
+                                ),
+                                Flexible(
+                                    child: Text(
+                                  title,
+                                  textAlign: TextAlign.center,
+                                  style: const TextStyle(
+                                      fontWeight: FontWeight.bold),
+                                ))
+                              ],
+                            ));
                       })
                 ],
               ))));

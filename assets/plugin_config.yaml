@@ -3,7 +3,7 @@
 
 urls:
   test: true
-  uat: http://102.218.0.4:4330 #https://uat.tsedeybank.com.et # https://uat.craftsilicon.com #
+  uat: http://102.218.0.4:4330 #https://uat.tsedeybank.com.et #  https://uat.craftsilicon.com
   live: https://tsedeychannels.tsedeybank.com.et:441
   tokenUrl: /ElmaV4Auth/api/auth/app #/ElmaV4Auth/api/auth/apps
 
@@ -19,4 +19,4 @@ request:
 appProperties:
   appLabel: Tsedey Mobile Banking UAT
   appPrimaryColor: 17C37B
-  appSecondaryColor: F6D703
+  appSecondaryColor: F8DB04

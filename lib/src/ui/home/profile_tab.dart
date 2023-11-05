@@ -82,22 +82,7 @@ class _ProfileTabState extends State<ProfileTab> {
                       onPressed: () {
                         showBottomDialog();
                       },
-                      child: const Row(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          Text(
-                            "Edit Image",
-                            style: TextStyle(fontSize: 16),
-                          ),
-                          SizedBox(
-                            width: 8,
-                          ),
-                          Icon(
-                            Icons.edit,
-                            color: Colors.black,
-                          )
-                        ],
-                      ),
+                      child: const Text("Change Photo"),
                     ),
                   ],
                 )),

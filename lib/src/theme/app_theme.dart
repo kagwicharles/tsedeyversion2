@@ -10,7 +10,7 @@ const pageTransitionsTheme = PageTransitionsTheme(
 
 class AppTheme {
   static var primaryColor = const Color(0xff17C37B);
-  static var secondaryAccent = const Color(0xffF6D703);
+  static var secondaryAccent = const Color(0xffF8DB04);
 
   ThemeData appTheme = ThemeData(
     primaryColor: primaryColor,
@@ -24,7 +24,7 @@ class AppTheme {
       surface: Colors.white,
       onError: Colors.red,
     ),
-    fontFamily: "NunitoSans",
+    fontFamily: "Manrope",
     appBarTheme: AppBarTheme(
         backgroundColor: primaryColor,
         foregroundColor: Colors.white,
@@ -91,6 +91,6 @@ class AppTheme {
         checkmarkColor: Colors.white,
         iconTheme: IconThemeData(size: 0),
         padding: EdgeInsets.symmetric(horizontal: 12, vertical: 16)),
-    scaffoldBackgroundColor: Colors.white,
+    scaffoldBackgroundColor: const Color(0xffF4F4F6),
   );
 }

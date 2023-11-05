@@ -32,7 +32,10 @@ class _ActivationScreenState extends State<ActivationScreen> {
         body: Container(
           height: double.infinity,
           width: double.infinity,
-          color: const Color(0xff105D38),
+          decoration: const BoxDecoration(
+              image: DecorationImage(
+                  image: AssetImage("assets/img/activation_bg.png"),
+                  fit: BoxFit.cover)),
           child: Column(
             children: [
               Expanded(
@@ -48,8 +51,8 @@ class _ActivationScreenState extends State<ActivationScreen> {
                       margin: EdgeInsets.zero,
                       shape: const RoundedRectangleBorder(
                           borderRadius: BorderRadius.only(
-                              topLeft: Radius.circular(40),
-                              topRight: Radius.circular(40))),
+                              topLeft: Radius.circular(28),
+                              topRight: Radius.circular(28))),
                       child: SingleChildScrollView(
                         padding: const EdgeInsets.symmetric(vertical: 8),
                         child: Padding(
@@ -62,7 +65,7 @@ class _ActivationScreenState extends State<ActivationScreen> {
                                   const Text(
                                     "Enter Activation Details",
                                     style: TextStyle(
-                                        fontSize: 24,
+                                        fontSize: 28,
                                         fontWeight: FontWeight.bold),
                                   ),
                                   const Text("to receive your activation key"),
