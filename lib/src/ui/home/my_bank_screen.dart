@@ -1,11 +1,11 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:craft_dynamic/craft_dynamic.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
-import 'package:get/get_connect/http/src/utils/utils.dart';
+import 'package:tsedeybnk/src/ui/home/dashboard_screen.dart';
 import 'package:tsedeybnk/src/ui/home/full_statement_screen.dart';
 import 'package:tsedeybnk/src/ui/home/map_screen.dart';
+import 'package:tsedeybnk/src/ui/home/recents_tab.dart';
 
 class MyBankTab extends StatefulWidget {
   const MyBankTab({super.key});
@@ -46,13 +46,17 @@ class _MyBankScreenState extends State<MyBankTab> {
               ),
               Row(children: [
                 IconButton(
-                    onPressed: () {}, icon: const Icon(Icons.arrow_back)),
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                      context.navigate(const DashboardScreen());
+                    },
+                    icon: const Icon(Icons.arrow_back)),
                 const SizedBox(
                   width: 12,
                 ),
                 const Text(
                   "My Bank",
-                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                 )
               ]),
               const SizedBox(
@@ -79,10 +83,20 @@ class _MyBankScreenState extends State<MyBankTab> {
               const SizedBox(
                 height: 24,
               ),
-              const Text(
-                "Transactions",
-                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
-              )
+              const Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    "Transactions",
+                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                  ),
+                ],
+              ),
+              const SizedBox(
+                height: 4,
+              ),
+              RecentsTab()
             ]));
   }
 }

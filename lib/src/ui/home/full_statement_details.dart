@@ -1,8 +1,9 @@
 import 'package:craft_dynamic/craft_dynamic.dart';
 import 'package:flutter/material.dart';
 import 'package:tsedeybnk/src/theme/app_theme.dart';
-import 'package:tsedeybnk/src/ui/home/ministatement.dart';
 import 'package:tsedeybnk/src/ui/home/transaction_details_screen.dart';
+
+import 'recents_tab.dart';
 
 class FullStatementDetails extends StatefulWidget {
   final List<dynamic> transactions;

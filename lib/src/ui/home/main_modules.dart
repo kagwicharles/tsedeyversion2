@@ -48,32 +48,40 @@ class MainModules extends StatelessWidget {
                               crossAxisAlignment: CrossAxisAlignment.center,
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
-                                CircleAvatar(
-                                    radius: 40,
-                                    backgroundColor: Colors.white,
-                                    child: CachedNetworkImage(
-                                      imageUrl: image ?? "",
-                                      placeholder: (context, url) =>
-                                          SpinKitPulse(
-                                        itemBuilder:
-                                            (BuildContext context, int index) {
-                                          return DecoratedBox(
-                                            decoration: BoxDecoration(
-                                              color: index.isEven
-                                                  ? APIService.appPrimaryColor
-                                                  : APIService
-                                                      .appSecondaryColor,
-                                            ),
-                                          );
-                                        },
-                                      ),
-                                      errorWidget: (context, url, error) =>
-                                          const Icon(Icons.error),
-                                      height:
-                                          module.menuProperties?.iconSize ?? 40,
-                                      width:
-                                          module.menuProperties?.iconSize ?? 40,
-                                    )),
+                                ClipOval(
+                                    child: Material(
+                                        elevation: 8,
+                                        child: CircleAvatar(
+                                            radius: 40,
+                                            backgroundColor: Colors.white,
+                                            child: CachedNetworkImage(
+                                              imageUrl: image ?? "",
+                                              placeholder: (context, url) =>
+                                                  SpinKitPulse(
+                                                itemBuilder:
+                                                    (BuildContext context,
+                                                        int index) {
+                                                  return DecoratedBox(
+                                                    decoration: BoxDecoration(
+                                                      color: index.isEven
+                                                          ? APIService
+                                                              .appPrimaryColor
+                                                          : APIService
+                                                              .appSecondaryColor,
+                                                    ),
+                                                  );
+                                                },
+                                              ),
+                                              errorWidget:
+                                                  (context, url, error) =>
+                                                      const Icon(Icons.error),
+                                              height: module.menuProperties
+                                                      ?.iconSize ??
+                                                  40,
+                                              width: module.menuProperties
+                                                      ?.iconSize ??
+                                                  40,
+                                            )))),
                                 const SizedBox(
                                   height: 24,
                                 ),

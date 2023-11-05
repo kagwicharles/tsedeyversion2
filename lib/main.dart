@@ -22,7 +22,7 @@ void main() async {
       statusBarBrightness: Brightness.light));
 
   // TODO Comment this line
-  // await _pref.addActivationData("251905557471", "1648094426");
+  // await _pref.addActivationData("251905557472", "9881258020");
 
   bool activationStatus = await profileRepo.checkAppActivationStatus();
 

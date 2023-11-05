@@ -177,11 +177,13 @@ class _LoginScreenState extends State<LoginScreen> {
                                           InkWell(
                                               borderRadius:
                                                   BorderRadius.circular(12),
-                                              onTap: () {
-                                                _authRepo.biometricLogin(
-                                                    _pinController,
-                                                    isButtonAction: true);
-                                              },
+                                              onTap: _isLoading
+                                                  ? null
+                                                  : () {
+                                                      _authRepo.biometricLogin(
+                                                          _pinController,
+                                                          isButtonAction: true);
+                                                    },
                                               child: Container(
                                                 padding:
                                                     const EdgeInsets.all(12),

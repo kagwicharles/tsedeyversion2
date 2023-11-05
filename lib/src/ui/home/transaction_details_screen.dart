@@ -1,7 +1,8 @@
 import 'package:craft_dynamic/craft_dynamic.dart';
 import 'package:flutter/material.dart';
 import 'package:tsedeybnk/src/theme/app_theme.dart';
-import 'package:tsedeybnk/src/ui/home/ministatement.dart';
+
+import 'recents_tab.dart';
 
 class TransactionDetailsScreen extends StatefulWidget {
   final Map<String, dynamic> transactionlist;
@@ -42,8 +43,10 @@ class _TransactionDetailsScreenState extends State<TransactionDetailsScreen> {
                       ? const SizedBox()
                       : Icon(Icons.account_balance,
                           size: 77,
-                          color: widget.transaction?.type?.toLowerCase() ==
-                                  "credit"
+                          color: widget.transactionlist["Transaction Type"]
+                                      .toLowerCase()
+                                      .contains("credit") ??
+                                  false
                               ? Colors.green.withOpacity(.6)
                               : Colors.redAccent.withOpacity(.6)),
                   widget.isFullStatement
@@ -54,12 +57,13 @@ class _TransactionDetailsScreenState extends State<TransactionDetailsScreen> {
                   widget.isFullStatement
                       ? const SizedBox()
                       : Text(
-                          widget.transaction?.type ?? "",
+                          widget.transactionlist["Transaction Type"] ?? "",
                           style: TextStyle(
                               fontWeight: FontWeight.w800,
                               fontSize: 24,
-                              color: widget.transaction?.type?.toLowerCase() ==
-                                      "credit"
+                              color: widget.transactionlist["Transaction Type"]
+                                      .toLowerCase()
+                                      .contains("credit")
                                   ? Colors.green
                                   : Colors.redAccent),
                         ),

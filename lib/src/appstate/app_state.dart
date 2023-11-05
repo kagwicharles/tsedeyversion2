@@ -7,6 +7,7 @@ class AppState extends ChangeNotifier {
   bool _isGettingBalance = false;
   bool _isLoadingHome = false;
   int _transactionsCount = 0;
+  String _trxAccountID = "";
 
   String get accountID => _accountID;
 
@@ -17,6 +18,8 @@ class AppState extends ChangeNotifier {
   String get customerName => _customerName;
 
   int get transactionsCount => _transactionsCount;
+
+  String get trxAccountID => _trxAccountID;
 
   void setCurrentAccountID(String accountID) {
     _accountID = accountID;
@@ -40,6 +43,11 @@ class AppState extends ChangeNotifier {
 
   void setTransactionsCount(int count) {
     _transactionsCount = count;
+    notifyListeners();
+  }
+
+  void setTrxAccountID(String accID) {
+    _trxAccountID = accID;
     notifyListeners();
   }
 }

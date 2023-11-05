@@ -4,7 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:provider/provider.dart';
 import 'package:tsedeybnk/src/appstate/app_state.dart';
-import 'package:tsedeybnk/src/ui/home/ministatement.dart';
+import 'package:tsedeybnk/src/ui/home/all_transactions_screen.dart';
+
+import 'transaction_details_screen.dart';
 
 class RecentsTab extends StatefulWidget {
   RecentsTab({super.key});
@@ -15,11 +17,10 @@ class RecentsTab extends StatefulWidget {
 
 class _RecentsTabState extends State<RecentsTab> {
   final _profileRepo = ProfileRepository();
-  final CarouselController _controller = CarouselController();
   List<BankAccount> userAccounts = [];
+  List<Transaction> transactionList = [];
+  bool isLoading = false;
 
-  int _currentIndex = 0;
-  bool _isLoading = true;
   String _currentValue = "";
 
   @override
@@ -31,162 +32,290 @@ class _RecentsTabState extends State<RecentsTab> {
     });
   }
 
+  Future<DynamicResponse?> _checkMiniStatement(String accountID) async {
+    return await _profileRepo.checkMiniStatement(accountID,
+        merchantID: "STATEMENT");
+  }
+
   getBankAccounts() async {
     var accounts = await _profileRepo.getUserBankAccounts();
-    setState(() {
-      _isLoading = false;
-      userAccounts = accounts;
-      _currentValue = userAccounts[0].bankAccountId;
+    userAccounts = accounts;
+    _currentValue = userAccounts[0].bankAccountId;
+    setAccountID(_currentValue);
+  }
+
+  void setAccountID(String accountID) {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      Provider.of<AppState>(context, listen: false).setTrxAccountID(accountID);
     });
   }
 
   @override
-  Widget build(BuildContext context) => Container(
-      padding: const EdgeInsets.symmetric(horizontal: 4),
-      child: Column(
+  Widget build(BuildContext context) => Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisSize: MainAxisSize.max,
         children: [
           const SizedBox(
-            height: 16,
+            height: 12,
           ),
-          const Align(
-              alignment: Alignment.centerLeft,
-              child: Text(
-                "Recent Transactions",
-                style: TextStyle(fontWeight: FontWeight.w600),
-              )),
-          const SizedBox(
-            height: 20,
-          ),
-          Row(
-            children: [
-              const Text("Account:"),
-              const SizedBox(
-                width: 12,
-              ),
-              Expanded(
-                  child: DropdownButtonFormField(
-                value: _currentValue,
-                items: userAccounts
-                    .asMap()
-                    .entries
-                    .map((item) {
-                      return DropdownMenuItem(
-                        value: item.value.bankAccountId,
-                        child: Text(
-                          item.value.aliasName.isEmpty
-                              ? item.value.bankAccountId
-                              : item.value.aliasName,
-                          style: Theme.of(context).textTheme.labelSmall,
-                        ),
-                      );
-                    })
-                    .toList()
-                    .toSet()
-                    .toList(),
-                onChanged: (value) {
-                  setState(() {
-                    _currentValue = value.toString();
-                  });
-                },
-                decoration: InputDecoration(
-                    contentPadding: const EdgeInsets.symmetric(
-                        vertical: 12, horizontal: 14),
-                    enabledBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(4),
-                        borderSide:
-                            BorderSide(color: Theme.of(context).primaryColor)),
-                    border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(4),
-                        borderSide:
-                            BorderSide(color: Theme.of(context).primaryColor)),
-                    focusedBorder: OutlineInputBorder(
-                        borderSide:
-                            BorderSide(color: Theme.of(context).primaryColor),
-                        borderRadius: BorderRadius.circular(4))),
-              )),
-            ],
+          DropdownButtonFormField(
+            value: _currentValue,
+            items: userAccounts
+                .asMap()
+                .entries
+                .map((item) {
+                  return DropdownMenuItem(
+                    value: item.value.bankAccountId,
+                    child: Text(
+                      item.value.aliasName.isEmpty
+                          ? item.value.bankAccountId
+                          : item.value.aliasName,
+                      style: Theme.of(context).textTheme.labelSmall,
+                    ),
+                  );
+                })
+                .toList()
+                .toSet()
+                .toList(),
+            decoration: const InputDecoration(
+                label: Text("Select Account"),
+                contentPadding:
+                    EdgeInsets.symmetric(vertical: 16, horizontal: 14)),
+            onChanged: (value) {
+              _currentValue = value.toString();
+              setAccountID(_currentValue);
+            },
           ),
           const SizedBox(
             height: 12,
           ),
-          Container(
-              padding: const EdgeInsets.all(8),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Row(
-                    children: [
-                      Consumer<AppState>(
-                          builder: (context, state, child) => Text(
-                                state.transactionsCount.toString(),
-                                style: TextStyle(
-                                    fontWeight: FontWeight.w600,
-                                    fontSize: 28,
-                                    color: APIService.appPrimaryColor),
-                              ).animate().fadeIn()),
-                      const SizedBox(
-                        width: 12,
-                      ),
-                      const Text("Transactions")
-                    ],
-                  )
-                ],
-              )),
-          Card(
-              child: Padding(
-                  padding: const EdgeInsets.all(8),
-                  child: Row(
-                    children: [
-                      Expanded(
-                          flex: 2,
-                          child: Container(
-                              padding: const EdgeInsets.all(2),
-                              child: const Text(
-                                "Date/Time",
-                                style: TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    color: Color(0xff3bb1bd)),
-                              ))),
-                      Expanded(
-                          flex: 4,
-                          child: Container(
-                              padding: const EdgeInsets.all(2),
-                              child: const Text(
-                                "Narration",
-                                style: TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    color: Color(0xff3bb1bd)),
-                              ))),
-                      Expanded(
-                          flex: 2,
-                          child: Container(
-                              padding: const EdgeInsets.all(2),
-                              child: const Text(
-                                "TRX Type",
-                                style: TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    color: Color(0xff3bb1bd)),
-                              ))),
-                      Expanded(
-                          flex: 2,
-                          child: Container(
-                              padding: const EdgeInsets.all(2),
-                              child: const Text(
-                                "Amount",
-                                style: TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    color: Color(0xff3bb1bd)),
-                              )))
-                    ],
-                  ))),
-          userAccounts.isNotEmpty && !_isLoading
-              ? MinistatementScreen(accountID: _currentValue)
-              : const SizedBox(),
+          const StatementHeader(),
+          Consumer<AppState>(
+              builder: (context, state, child) =>
+                  FutureBuilder<DynamicResponse?>(
+                    future: _checkMiniStatement(state
+                        .trxAccountID), // a previously-obtained Future<String> or null
+                    builder: (BuildContext context,
+                        AsyncSnapshot<DynamicResponse?> snapshot) {
+                      var color = Theme.of(context).primaryColor;
+
+                      if (snapshot.connectionState == ConnectionState.waiting) {
+                        return Center(child: CircularLoadUtil());
+                      }
+
+                      Widget child = Center(child: LoadUtil());
+                      if (snapshot.hasData) {
+                        var ministatement = snapshot.data?.accountStatement;
+
+                        if (snapshot.data?.status !=
+                            StatusCode.success.statusCode) {
+                          CommonUtils.showToast(snapshot.data?.message ??
+                              "Ministatement request failed");
+                          return _buildRetryButton();
+                        }
+
+                        if (ministatement == null) {
+                          return _buildRetryButton();
+                        } else if (ministatement.isEmpty) {
+                          CommonUtils.showToast("No transactions yet");
+                          return const EmptyUtil();
+                        }
+
+                        addTransactions(list: ministatement);
+
+                        child = Column(children: [
+                          ListView.separated(
+                            shrinkWrap: true,
+                            physics: const NeverScrollableScrollPhysics(),
+                            itemCount: transactionList.length > 2 ? 2 : 0,
+                            itemBuilder: (BuildContext context, index) {
+                              Transaction? trx = transactionList[index];
+                              var date = transactionList[index].date ?? "";
+                              var type =
+                                  transactionList[index].transactionType ?? "";
+                              var amount = transactionList[index].amount ?? "";
+
+                              bool isCredit = transactionList[index]
+                                      .type
+                                      ?.toLowerCase()
+                                      .contains("credit") ??
+                                  false;
+
+                              return Card(
+                                  elevation: 0,
+                                  child: InkWell(
+                                      borderRadius: BorderRadius.circular(12),
+                                      onTap: () {
+                                        context
+                                            .navigate(TransactionDetailsScreen(
+                                          transactionlist: ministatement[index],
+                                        ));
+                                      },
+                                      child: Container(
+                                          padding: const EdgeInsets.all(8),
+                                          child: Row(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.center,
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.spaceBetween,
+                                            children: [
+                                              Expanded(
+                                                  flex: 2,
+                                                  child: Container(
+                                                      padding:
+                                                          const EdgeInsets.all(
+                                                              2),
+                                                      child: Text(
+                                                        date.isEmpty
+                                                            ? "****"
+                                                            : date,
+                                                        style: const TextStyle(
+                                                          fontWeight:
+                                                              FontWeight.normal,
+                                                        ),
+                                                        softWrap: true,
+                                                        textAlign:
+                                                            TextAlign.center,
+                                                      ))),
+                                              Expanded(
+                                                  flex: 4,
+                                                  child: Container(
+                                                      padding:
+                                                          const EdgeInsets.all(
+                                                              2),
+                                                      child: Text(
+                                                        type.isEmpty
+                                                            ? "N/A"
+                                                            : type,
+                                                        style: TextStyle(
+                                                            color: color,
+                                                            fontSize: 16),
+                                                        softWrap: true,
+                                                      ))),
+                                              Expanded(
+                                                  flex: 2,
+                                                  child: Container(
+                                                      padding:
+                                                          const EdgeInsets.all(
+                                                              2),
+                                                      child: Text(
+                                                        isCredit
+                                                            ? "CREDIT"
+                                                            : "DEBIT",
+                                                        style: TextStyle(
+                                                            color: isCredit
+                                                                ? Colors.green
+                                                                : Colors
+                                                                    .redAccent),
+                                                        softWrap: true,
+                                                      ))),
+                                              Expanded(
+                                                  flex: 2,
+                                                  child: Container(
+                                                      padding:
+                                                          const EdgeInsets.all(
+                                                              2),
+                                                      child: Text(
+                                                        amount,
+                                                        style: const TextStyle(
+                                                          fontWeight:
+                                                              FontWeight.bold,
+                                                        ),
+                                                        softWrap: true,
+                                                      ))),
+                                            ],
+                                          ))));
+                            },
+                            separatorBuilder:
+                                (BuildContext context, int index) =>
+                                    const SizedBox(),
+                          )
+                              .animate()
+                              .moveY(duration: 700.ms, begin: 100, end: 0),
+                          transactionList.length > 2
+                              ? TextButton(
+                                  onPressed: () {
+                                    context.navigate(AllTransactionsScreen(
+                                        allTransactions: transactionList,
+                                        ministatement: ministatement));
+                                  },
+                                  child: const Row(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        Text(
+                                          "View all",
+                                          style: TextStyle(fontSize: 18),
+                                        ),
+                                        SizedBox(
+                                          width: 4,
+                                        ),
+                                        Icon(Icons.arrow_forward)
+                                      ]))
+                              : const SizedBox()
+                        ]);
+                      } else if (snapshot.hasError) {
+                        child = const EmptyUtil();
+                        CommonUtils.showToast("Error getting ministatement");
+                      }
+                      return child;
+                    },
+                  ))
         ],
-      ));
+      );
 
   onSwipe(int index, CarouselPageChangedReason reason) {}
+
+  addTransactions({required List<dynamic> list}) {
+    transactionList.clear();
+    if (list.isNotEmpty) {
+      for (var item in list) {
+        transactionList.add(Transaction.fromJson(item));
+      }
+    }
+  }
+
+  Widget _buildRetryButton() {
+    var color = Theme.of(context).primaryColor;
+
+    return Center(
+        child: InkWell(
+            onTap: () {
+              setState(() {});
+            },
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Icon(
+                  Icons.replay_outlined,
+                  size: 44,
+                  color: color,
+                ),
+                const Text(
+                  "Reload",
+                  style: TextStyle(fontWeight: FontWeight.bold),
+                )
+              ],
+            )));
+  }
+}
+
+class Transaction {
+  String? date;
+  String? amount;
+  String? transactionType;
+  String? type;
+
+  Transaction(
+      {required this.date,
+      required this.amount,
+      required this.transactionType,
+      required this.type});
+
+  Transaction.fromJson(Map<String, dynamic> json)
+      : date = json["Transaction Time"],
+        amount = json["Amount"],
+        transactionType = json["Narration"],
+        type = json["Transaction Type"];
 }

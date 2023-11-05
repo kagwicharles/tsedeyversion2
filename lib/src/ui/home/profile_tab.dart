@@ -47,23 +47,37 @@ class _ProfileTabState extends State<ProfileTab> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Header(
-                  firstName: "",
-                  isProfileSettings: true,
+                const SizedBox(
+                  height: 24,
                 ),
+                Row(children: [
+                  IconButton(
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                        context.navigate(const DashboardScreen());
+                      },
+                      icon: const Icon(Icons.arrow_back)),
+                  const SizedBox(
+                    width: 12,
+                  ),
+                  const Text(
+                    "Profile Settings",
+                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                  )
+                ]),
                 const SizedBox(
                   height: 24,
                 ),
                 Center(
                   child: imagefile?.path == null || imagefile?.path == ""
                       ? const CircleAvatar(
-                          radius: 77,
+                          radius: 54,
                           child: Icon(
                             Icons.person,
                             size: 54,
                           ))
                       : CircleAvatar(
-                          radius: 77, // Image radius
+                          radius: 54, // Image radius
                           backgroundImage: FileImage(
                             File(imagefile?.path ?? ""),
                           ),
@@ -86,11 +100,6 @@ class _ProfileTabState extends State<ProfileTab> {
                     ),
                   ],
                 )),
-                const SizedBox(height: 10),
-                const Divider(
-                  color: Colors.white,
-                  thickness: 20,
-                ),
                 const SizedBox(
                   height: 20,
                 ),
@@ -99,208 +108,151 @@ class _ProfileTabState extends State<ProfileTab> {
                   child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Row(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            const Icon(
-                              Icons.person,
-                              color: Colors.black54,
-                            ),
-                            const SizedBox(
-                              width: 20,
-                            ),
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                const Text(
-                                  "Full Name",
-                                  style: TextStyle(fontWeight: FontWeight.w600),
-                                ),
-                                const SizedBox(
-                                  height: 8,
-                                ),
-                                Row(
-                                  children: [
-                                    LoadAccountDetail(
-                                        datakey: UserAccountData.FirstName),
-                                    const SizedBox(
-                                      width: 4,
-                                    ),
-                                    LoadAccountDetail(
-                                        datakey: UserAccountData.LastName)
-                                  ],
-                                )
-                              ],
-                            ),
-                          ],
+                        const Text(
+                          "Personal Details",
+                          style: TextStyle(color: Colors.grey),
+                        ),
+                        const SizedBox(
+                          height: 14,
+                        ),
+                        Card(
+                          elevation: 0,
+                          child: Column(
+                            children: [
+                              CardInfo(
+                                  title: "Full Name",
+                                  value: Row(
+                                    children: [
+                                      LoadAccountDetail(
+                                          datakey: UserAccountData.FirstName),
+                                      const SizedBox(
+                                        width: 4,
+                                      ),
+                                      LoadAccountDetail(
+                                          datakey: UserAccountData.LastName)
+                                    ],
+                                  )),
+                            ],
+                          ),
                         ),
                         const SizedBox(
                           height: 34,
                         ),
-                        Row(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              const Icon(
-                                Icons.phone,
-                                color: Colors.black54,
-                              ),
-                              const SizedBox(
-                                width: 20,
-                              ),
-                              Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  const Text(
-                                    "Mobile Number",
-                                    style:
-                                        TextStyle(fontWeight: FontWeight.w600),
-                                  ),
-                                  const SizedBox(
-                                    height: 8,
-                                  ),
-                                  LoadAccountDetail(
-                                      datakey: UserAccountData.Phone)
-                                ],
-                              )
-                            ]),
-                        const SizedBox(
-                          height: 34,
+                        const Text(
+                          "Account Details",
+                          style: TextStyle(color: Colors.grey),
                         ),
-                        Row(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              const Icon(
-                                Icons.email,
-                                color: Colors.black54,
-                              ),
-                              const SizedBox(
-                                width: 20,
-                              ),
-                              Flexible(
-                                  child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  const Text(
-                                    "Email Address",
-                                    style:
-                                        TextStyle(fontWeight: FontWeight.w600),
-                                  ),
-                                  const SizedBox(
-                                    height: 8,
-                                  ),
-                                  LoadAccountDetail(
-                                      datakey: UserAccountData.EmailID),
-                                ],
-                              ))
-                            ]),
                         const SizedBox(
-                          height: 20,
+                          height: 14,
                         ),
-                        Row(
-                            crossAxisAlignment: CrossAxisAlignment.start,
+                        Card(
+                          elevation: 0,
+                          child: Column(
                             children: [
-                              const Icon(
-                                Icons.account_balance,
-                                color: Colors.black54,
-                              ),
-                              const SizedBox(
-                                width: 20,
-                              ),
-                              Flexible(
-                                  child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  const Text(
-                                    "My Accounts",
-                                    style:
-                                        TextStyle(fontWeight: FontWeight.w600),
-                                  ),
-                                  const SizedBox(
-                                    height: 8,
-                                  ),
-                                  FutureBuilder<List<BankAccount>>(
-                                      future:
-                                          _profileRepo.getUserBankAccounts(),
-                                      builder: (context, snapshot) => snapshot
-                                              .hasData
-                                          ? ListView.separated(
-                                              shrinkWrap: true,
-                                              physics:
-                                                  const NeverScrollableScrollPhysics(),
-                                              itemBuilder: (context, index) =>
-                                                  Row(
-                                                    mainAxisAlignment:
-                                                        MainAxisAlignment
-                                                            .spaceBetween,
-                                                    children: [
-                                                      Text(
-                                                        snapshot.data?[index]
-                                                                .bankAccountId
-                                                                .replaceRange(
-                                                                    4,
-                                                                    9,
-                                                                    "****") ??
-                                                            "",
-                                                        style: TextStyle(
-                                                            color: Theme.of(
-                                                                    context)
-                                                                .primaryColor),
-                                                      ),
-                                                      Text(snapshot.data?[index]
-                                                              .aliasName ??
-                                                          '" "')
-                                                    ],
-                                                  ),
-                                              separatorBuilder:
-                                                  (context, index) =>
-                                                      const SizedBox(
-                                                        height: 8,
-                                                      ),
-                                              itemCount:
-                                                  snapshot.data?.length ?? 0)
-                                          : ThreeLoadUtil())
-                                ],
-                              ))
-                            ]),
+                              CardInfo(
+                                  title: "Email",
+                                  value: LoadAccountDetail(
+                                    datakey: UserAccountData.EmailID,
+                                  )),
+                              const Padding(
+                                  padding: EdgeInsets.symmetric(horizontal: 14),
+                                  child: Divider(
+                                    color: Colors.grey,
+                                  )),
+                              CardInfo(
+                                  title: "Phone Number",
+                                  value: LoadAccountDetail(
+                                    datakey: UserAccountData.Phone,
+                                  ))
+                            ],
+                          ),
+                        ),
+                        const SizedBox(
+                          height: 14,
+                        ),
+                        Card(
+                            child: FutureBuilder<List<BankAccount>>(
+                                future: _profileRepo.getUserBankAccounts(),
+                                builder: (context, snapshot) => snapshot.hasData
+                                    ? ListView.separated(
+                                        shrinkWrap: true,
+                                        physics:
+                                            const NeverScrollableScrollPhysics(),
+                                        itemBuilder: (context, index) {
+                                          String alias =
+                                              snapshot.data?[index].aliasName ??
+                                                  "";
+                                          return Padding(
+                                              padding: const EdgeInsets.all(12),
+                                              child: Row(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment
+                                                        .spaceBetween,
+                                                children: [
+                                                  Text(alias.isEmpty
+                                                      ? "Account"
+                                                      : alias),
+                                                  Text(
+                                                    snapshot.data?[index]
+                                                            .bankAccountId
+                                                            .replaceRange(
+                                                          4,
+                                                          9,
+                                                          "****",
+                                                        ) ??
+                                                        "",
+                                                    style: const TextStyle(
+                                                        fontWeight:
+                                                            FontWeight.bold),
+                                                  )
+                                                ],
+                                              ));
+                                        },
+                                        separatorBuilder: (context, index) =>
+                                            const SizedBox(
+                                              height: 8,
+                                            ),
+                                        itemCount: snapshot.data?.length ?? 0)
+                                    : ThreeLoadUtil()))
                       ]),
                 ).animate().moveY(duration: 700.ms, begin: 100, end: 0),
+                const SizedBox(
+                  height: 24,
+                ),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    const Text(
+                      "Version",
+                      style: TextStyle(fontWeight: FontWeight.w600),
+                    ),
+                    const SizedBox(
+                      height: 2,
+                    ),
+                    FutureBuilder<String>(
+                        future: DeviceInfo.getAppVersion(),
+                        builder: (BuildContext context,
+                            AsyncSnapshot<String> snapshot) {
+                          Widget child = const SizedBox();
+                          if (snapshot.hasData) {
+                            child = Align(
+                                alignment: Alignment.center,
+                                child: Column(
+                                  children: [
+                                    Text(
+                                      snapshot.data ?? "",
+                                      overflow: TextOverflow.ellipsis,
+                                    ),
+                                  ],
+                                ));
+                          }
+                          return child;
+                        }),
+                  ],
+                )
               ],
             ),
           )),
-          const SizedBox(
-            height: 24,
-          ),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              const Text(
-                "Version",
-                style: TextStyle(fontWeight: FontWeight.w600),
-              ),
-              const SizedBox(
-                height: 2,
-              ),
-              FutureBuilder<String>(
-                  future: DeviceInfo.getAppVersion(),
-                  builder:
-                      (BuildContext context, AsyncSnapshot<String> snapshot) {
-                    Widget child = const SizedBox();
-                    if (snapshot.hasData) {
-                      child = Align(
-                          alignment: Alignment.center,
-                          child: Column(
-                            children: [
-                              Text(
-                                snapshot.data ?? "",
-                                overflow: TextOverflow.ellipsis,
-                              ),
-                            ],
-                          ));
-                    }
-                    return child;
-                  }),
-            ],
-          )
         ],
       );
 
@@ -484,9 +436,22 @@ class LoadAccountDetail extends StatelessWidget {
         builder: (context, snapshot) => snapshot.hasData
             ? Text(
                 snapshot.data ?? "",
-                style: TextStyle(
-                    color: Theme.of(context).primaryColor, fontSize: 16),
+                style: const TextStyle(fontWeight: FontWeight.bold),
               )
             : const Center(child: SizedBox()));
   }
+}
+
+class CardInfo extends StatelessWidget {
+  final String title;
+  final Widget value;
+
+  const CardInfo({super.key, required this.title, required this.value});
+  @override
+  Widget build(BuildContext context) => Padding(
+      padding: const EdgeInsets.all(12),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [Text(title), value],
+      ));
 }

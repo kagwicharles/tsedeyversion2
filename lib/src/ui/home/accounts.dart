@@ -161,9 +161,8 @@ class _BankAccountWidgetState extends State<BankAccountWidget> {
                     Expanded(
                         flex: 8,
                         child: Container(
-                            padding: const EdgeInsets.all(4),
-                            child: Center(
-                                child: Text(
+                            padding: const EdgeInsets.symmetric(horizontal: 14),
+                            child: Text(
                               balanceHidden
                                   ? balancePlaceHolder
                                   : StringUtil
@@ -171,11 +170,12 @@ class _BankAccountWidgetState extends State<BankAccountWidget> {
                                           accountsAndBalances[widget
                                                   .bankAccount.bankAccountId] ??
                                               "Balance unavailable"),
+                              textAlign: TextAlign.left,
                               style: TextStyle(
                                   fontSize: 28,
                                   fontWeight: FontWeight.bold,
                                   color: Colors.red[50]),
-                            )))),
+                            ))),
                     Expanded(
                         flex: 2,
                         child: accountBalanceError
