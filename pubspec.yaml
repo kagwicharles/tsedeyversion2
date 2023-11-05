@@ -59,6 +59,7 @@ dependencies:
   path_provider: ^2.1.1
   google_maps_flutter: ^2.5.0
   vibration: ^1.7.7
+  fl_chart: ^0.64.0
   # craft_dynamic:
   #   hosted: https://onepub.dev/api/fvluhnofly/
   #   version: ^0.0.1

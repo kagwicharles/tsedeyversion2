@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:provider/provider.dart';
 import 'package:tsedeybnk/src/ui/home/dashboard_screen.dart';
+import 'package:tsedeybnk/src/ui/home/line_chart.dart';
 
 import '../../appstate/app_state.dart';
 import 'accounts.dart';
@@ -85,11 +86,16 @@ class _HomeTabState extends State<HomeTab> {
             const SizedBox(
               height: 12,
             ),
-            !state.isLoadingHome && mainmodules.isNotEmpty
-                ? MainModules(
-                    mainmodules: mainmodules,
-                  ).animate().moveY(duration: 700.ms, begin: 100, end: 0)
-                : const SizedBox(),
+            Column(
+              children: [
+                !state.isLoadingHome && mainmodules.isNotEmpty
+                    ? MainModules(
+                        mainmodules: mainmodules,
+                      )
+                    : const SizedBox(),
+                const LineChartSample2()
+              ],
+            ).animate().moveY(duration: 700.ms, begin: 100, end: 0),
           ],
         )),
       );

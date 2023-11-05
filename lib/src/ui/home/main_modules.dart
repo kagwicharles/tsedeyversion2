@@ -89,8 +89,7 @@ class MainModules extends StatelessWidget {
                                     child: Text(
                                   title,
                                   textAlign: TextAlign.center,
-                                  style: const TextStyle(
-                                      fontWeight: FontWeight.bold),
+                                  style: const TextStyle(fontSize: 14),
                                 ))
                               ],
                             ));

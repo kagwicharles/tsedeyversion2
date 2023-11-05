@@ -1,8 +1,7 @@
 import 'package:craft_dynamic/craft_dynamic.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_launcher_icons/config/config.dart';
-import 'package:get/get.dart';
+
 import 'package:pinput/pinput.dart';
 import 'package:tsedeybnk/src/theme/app_theme.dart';
 import 'package:vibration/vibration.dart';

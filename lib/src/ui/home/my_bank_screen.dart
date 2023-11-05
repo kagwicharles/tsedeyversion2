@@ -149,7 +149,7 @@ class ListItem extends StatelessWidget {
                 Text(
                   moduleItem.moduleName,
                   textAlign: TextAlign.center,
-                  style: const TextStyle(fontWeight: FontWeight.bold),
+                  style: const TextStyle(fontSize: 14),
                 ),
               ],
             )));
