@@ -260,11 +260,9 @@ packages:
   craft_dynamic:
     dependency: "direct main"
     description:
-      path: "."
-      ref: development
-      resolved-ref: "5a90f23120db324cfd88a1c0c941ec50e50b7cf5"
-      url: "https://github.com/kagwicharles/craftdynamic_hive.git"
-    source: git
+      path: "packages/craftdynamic_hive"
+      relative: true
+    source: path
     version: "0.0.1"
   cross_file:
     dependency: transitive
