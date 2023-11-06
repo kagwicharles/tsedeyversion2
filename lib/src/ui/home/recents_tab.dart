@@ -27,9 +27,6 @@ class _RecentsTabState extends State<RecentsTab> {
   void initState() {
     super.initState();
     getBankAccounts();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      Provider.of<AppState>(context, listen: false).setTransactionsCount(0);
-    });
   }
 
   Future<DynamicResponse?> _checkMiniStatement(String accountID) async {
@@ -41,7 +38,7 @@ class _RecentsTabState extends State<RecentsTab> {
     var accounts = await _profileRepo.getUserBankAccounts();
     userAccounts = accounts;
     _currentValue = userAccounts[0].bankAccountId;
-    setAccountID(_currentValue);
+    setState(() {});
   }
 
   void setAccountID(String accountID) {
@@ -82,193 +79,177 @@ class _RecentsTabState extends State<RecentsTab> {
                 contentPadding:
                     EdgeInsets.symmetric(vertical: 16, horizontal: 14)),
             onChanged: (value) {
-              _currentValue = value.toString();
-              setAccountID(_currentValue);
+              setState(() {
+                _currentValue = value.toString();
+              });
             },
           ),
           const SizedBox(
             height: 12,
           ),
           const StatementHeader(),
-          Consumer<AppState>(
-              builder: (context, state, child) => state.trxAccountID.isEmpty
-                  ? const SizedBox()
-                  : FutureBuilder<DynamicResponse?>(
-                      future: _checkMiniStatement(state
-                          .trxAccountID), // a previously-obtained Future<String> or null
-                      builder: (BuildContext context,
-                          AsyncSnapshot<DynamicResponse?> snapshot) {
-                        var color = Theme.of(context).primaryColor;
+          _currentValue.isEmpty
+              ? const SizedBox()
+              : FutureBuilder<DynamicResponse?>(
+                  future: _checkMiniStatement(
+                      _currentValue), // a previously-obtained Future<String> or null
+                  builder: (BuildContext context,
+                      AsyncSnapshot<DynamicResponse?> snapshot) {
+                    var color = Theme.of(context).primaryColor;
 
-                        if (snapshot.connectionState ==
-                            ConnectionState.waiting) {
-                          return Center(child: CircularLoadUtil());
-                        }
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return Center(child: CircularLoadUtil());
+                    }
 
-                        Widget child = Center(child: LoadUtil());
-                        if (snapshot.hasData) {
-                          var ministatement = snapshot.data?.accountStatement;
+                    Widget child = Center(child: LoadUtil());
+                    if (snapshot.hasData) {
+                      var ministatement = snapshot.data?.accountStatement;
 
-                          if (snapshot.data?.status !=
-                              StatusCode.success.statusCode) {
-                            CommonUtils.showToast(snapshot.data?.message ??
-                                "Ministatement request failed");
-                            return _buildRetryButton();
-                          }
+                      if (snapshot.data?.status !=
+                          StatusCode.success.statusCode) {
+                        CommonUtils.showToast(snapshot.data?.message ??
+                            "Ministatement request failed");
+                        return _buildRetryButton();
+                      }
 
-                          if (ministatement == null) {
-                            return _buildRetryButton();
-                          } else if (ministatement.isEmpty) {
-                            CommonUtils.showToast("No transactions yet");
-                            return const EmptyUtil();
-                          }
+                      if (ministatement == null) {
+                        return _buildRetryButton();
+                      } else if (ministatement.isEmpty) {
+                        CommonUtils.showToast("No transactions yet");
+                        return const EmptyUtil();
+                      }
 
-                          addTransactions(list: ministatement);
+                      addTransactions(list: ministatement);
 
-                          child = Column(children: [
-                            ListView.separated(
-                              shrinkWrap: true,
-                              physics: const NeverScrollableScrollPhysics(),
-                              itemCount: transactionList.length > 2 ? 2 : 0,
-                              itemBuilder: (BuildContext context, index) {
-                                Transaction? trx = transactionList[index];
-                                var date = transactionList[index].date ?? "";
-                                var type =
-                                    transactionList[index].transactionType ??
-                                        "";
-                                var amount =
-                                    transactionList[index].amount ?? "";
+                      child = Column(children: [
+                        ListView.separated(
+                          shrinkWrap: true,
+                          physics: const NeverScrollableScrollPhysics(),
+                          itemCount: transactionList.length > 2 ? 2 : 0,
+                          itemBuilder: (BuildContext context, index) {
+                            Transaction? trx = transactionList[index];
+                            var date = transactionList[index].date ?? "";
+                            var type =
+                                transactionList[index].transactionType ?? "";
+                            var amount = transactionList[index].amount ?? "";
 
-                                bool isCredit = transactionList[index]
-                                        .type
-                                        ?.toLowerCase()
-                                        .contains("credit") ??
-                                    false;
+                            bool isCredit = transactionList[index]
+                                    .type
+                                    ?.toLowerCase()
+                                    .contains("credit") ??
+                                false;
 
-                                return Card(
-                                    elevation: 0,
-                                    child: InkWell(
-                                        borderRadius: BorderRadius.circular(12),
-                                        onTap: () {
-                                          context.navigate(
-                                              TransactionDetailsScreen(
-                                            transactionlist:
-                                                ministatement[index],
-                                          ));
-                                        },
-                                        child: Container(
-                                            padding: const EdgeInsets.all(8),
-                                            child: Row(
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.center,
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment
-                                                      .spaceBetween,
-                                              children: [
-                                                Expanded(
-                                                    flex: 2,
-                                                    child: Container(
-                                                        padding:
-                                                            const EdgeInsets
-                                                                .all(2),
-                                                        child: Text(
-                                                          date.isEmpty
-                                                              ? "****"
-                                                              : date,
-                                                          style:
-                                                              const TextStyle(
-                                                            fontWeight:
-                                                                FontWeight
-                                                                    .normal,
-                                                          ),
-                                                          softWrap: true,
-                                                          textAlign:
-                                                              TextAlign.center,
-                                                        ))),
-                                                Expanded(
-                                                    flex: 4,
-                                                    child: Container(
-                                                        padding:
-                                                            const EdgeInsets
-                                                                .all(2),
-                                                        child: Text(
-                                                          type.isEmpty
-                                                              ? "N/A"
-                                                              : type,
-                                                          style: TextStyle(
-                                                              color: color,
-                                                              fontSize: 16),
-                                                          softWrap: true,
-                                                        ))),
-                                                Expanded(
-                                                    flex: 2,
-                                                    child: Container(
-                                                        padding:
-                                                            const EdgeInsets
-                                                                .all(2),
-                                                        child: Text(
-                                                          isCredit
-                                                              ? "CREDIT"
-                                                              : "DEBIT",
-                                                          style: TextStyle(
-                                                              color: isCredit
-                                                                  ? Colors.green
-                                                                  : Colors
-                                                                      .redAccent),
-                                                          softWrap: true,
-                                                        ))),
-                                                Expanded(
-                                                    flex: 2,
-                                                    child: Container(
-                                                        padding:
-                                                            const EdgeInsets
-                                                                .all(2),
-                                                        child: Text(
-                                                          amount,
-                                                          style:
-                                                              const TextStyle(
-                                                            fontWeight:
-                                                                FontWeight.bold,
-                                                          ),
-                                                          softWrap: true,
-                                                        ))),
-                                              ],
-                                            ))));
-                              },
-                              separatorBuilder:
-                                  (BuildContext context, int index) =>
-                                      const SizedBox(),
-                            )
-                                .animate()
-                                .moveY(duration: 700.ms, begin: 100, end: 0),
-                            transactionList.length > 2
-                                ? TextButton(
-                                    onPressed: () {
-                                      context.navigate(AllTransactionsScreen(
-                                          allTransactions: transactionList,
-                                          ministatement: ministatement));
+                            return Card(
+                                elevation: 0,
+                                child: InkWell(
+                                    borderRadius: BorderRadius.circular(12),
+                                    onTap: () {
+                                      context.navigate(TransactionDetailsScreen(
+                                        transactionlist: ministatement[index],
+                                      ));
                                     },
-                                    child: const Row(
-                                        mainAxisSize: MainAxisSize.min,
-                                        children: [
-                                          Text(
-                                            "View all",
-                                            style: TextStyle(fontSize: 18),
-                                          ),
-                                          SizedBox(
-                                            width: 4,
-                                          ),
-                                          Icon(Icons.arrow_forward)
-                                        ]))
-                                : const SizedBox()
-                          ]);
-                        } else if (snapshot.hasError) {
-                          child = const EmptyUtil();
-                          CommonUtils.showToast("Error getting ministatement");
-                        }
-                        return child;
-                      },
-                    ))
+                                    child: Container(
+                                        padding: const EdgeInsets.all(8),
+                                        child: Row(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.center,
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceBetween,
+                                          children: [
+                                            Expanded(
+                                                flex: 2,
+                                                child: Container(
+                                                    padding:
+                                                        const EdgeInsets.all(2),
+                                                    child: Text(
+                                                      date.isEmpty
+                                                          ? "****"
+                                                          : date,
+                                                      style: const TextStyle(
+                                                        fontWeight:
+                                                            FontWeight.normal,
+                                                      ),
+                                                      softWrap: true,
+                                                      textAlign:
+                                                          TextAlign.center,
+                                                    ))),
+                                            Expanded(
+                                                flex: 4,
+                                                child: Container(
+                                                    padding:
+                                                        const EdgeInsets.all(2),
+                                                    child: Text(
+                                                      type.isEmpty
+                                                          ? "N/A"
+                                                          : type,
+                                                      style: TextStyle(
+                                                          color: color,
+                                                          fontSize: 16),
+                                                      softWrap: true,
+                                                    ))),
+                                            Expanded(
+                                                flex: 2,
+                                                child: Container(
+                                                    padding:
+                                                        const EdgeInsets.all(2),
+                                                    child: Text(
+                                                      isCredit
+                                                          ? "CREDIT"
+                                                          : "DEBIT",
+                                                      style: TextStyle(
+                                                          color: isCredit
+                                                              ? Colors.green
+                                                              : Colors
+                                                                  .redAccent),
+                                                      softWrap: true,
+                                                    ))),
+                                            Expanded(
+                                                flex: 2,
+                                                child: Container(
+                                                    padding:
+                                                        const EdgeInsets.all(2),
+                                                    child: Text(
+                                                      amount,
+                                                      style: const TextStyle(
+                                                        fontWeight:
+                                                            FontWeight.bold,
+                                                      ),
+                                                      softWrap: true,
+                                                    ))),
+                                          ],
+                                        ))));
+                          },
+                          separatorBuilder: (BuildContext context, int index) =>
+                              const SizedBox(),
+                        ).animate().moveY(duration: 700.ms, begin: 100, end: 0),
+                        transactionList.length > 2
+                            ? TextButton(
+                                onPressed: () {
+                                  context.navigate(AllTransactionsScreen(
+                                      allTransactions: transactionList,
+                                      ministatement: ministatement));
+                                },
+                                child: const Row(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      Text(
+                                        "View all",
+                                        style: TextStyle(fontSize: 18),
+                                      ),
+                                      SizedBox(
+                                        width: 4,
+                                      ),
+                                      Icon(Icons.arrow_forward)
+                                    ]))
+                            : const SizedBox()
+                      ]);
+                    } else if (snapshot.hasError) {
+                      child = const EmptyUtil();
+                      CommonUtils.showToast("Error getting ministatement");
+                    }
+                    return child;
+                  },
+                )
         ],
       );
 
