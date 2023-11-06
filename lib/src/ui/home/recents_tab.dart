@@ -9,7 +9,7 @@ import 'package:tsedeybnk/src/ui/home/all_transactions_screen.dart';
 import 'transaction_details_screen.dart';
 
 class RecentsTab extends StatefulWidget {
-  RecentsTab({super.key});
+  const RecentsTab({super.key});
 
   @override
   State<RecentsTab> createState() => _RecentsTabState();

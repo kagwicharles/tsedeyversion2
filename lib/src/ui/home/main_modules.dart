@@ -26,9 +26,9 @@ class MainModules extends StatelessWidget {
                       padding: const EdgeInsets.symmetric(horizontal: 8),
                       gridDelegate:
                           const SliverGridDelegateWithFixedCrossAxisCount(
-                              childAspectRatio: 0.7,
+                              childAspectRatio: 0.6,
                               crossAxisCount: 4,
-                              mainAxisSpacing: 8,
+                              mainAxisSpacing: 4,
                               crossAxisSpacing: 2),
                       itemBuilder: (BuildContext context, index) {
                         var module = mainmodules[index];
