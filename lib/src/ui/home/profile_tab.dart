@@ -182,6 +182,7 @@ class _ProfileTabState extends State<ProfileTab> {
                                           String alias =
                                               snapshot.data?[index].aliasName ??
                                                   "";
+
                                           return Padding(
                                               padding: const EdgeInsets.all(12),
                                               child: Row(

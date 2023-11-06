@@ -46,42 +46,35 @@ class MainModules extends StatelessWidget {
                             },
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.center,
-                              mainAxisAlignment: MainAxisAlignment.center,
+                              mainAxisAlignment: MainAxisAlignment.start,
                               children: [
-                                ClipOval(
-                                    child: Material(
-                                        elevation: 8,
-                                        child: CircleAvatar(
-                                            radius: 40,
-                                            backgroundColor: Colors.white,
-                                            child: CachedNetworkImage(
-                                              imageUrl: image ?? "",
-                                              placeholder: (context, url) =>
-                                                  SpinKitPulse(
-                                                itemBuilder:
-                                                    (BuildContext context,
-                                                        int index) {
-                                                  return DecoratedBox(
-                                                    decoration: BoxDecoration(
-                                                      color: index.isEven
-                                                          ? APIService
-                                                              .appPrimaryColor
-                                                          : APIService
-                                                              .appSecondaryColor,
-                                                    ),
-                                                  );
-                                                },
-                                              ),
-                                              errorWidget:
-                                                  (context, url, error) =>
-                                                      const Icon(Icons.error),
-                                              height: module.menuProperties
-                                                      ?.iconSize ??
-                                                  40,
-                                              width: module.menuProperties
-                                                      ?.iconSize ??
-                                                  40,
-                                            )))),
+                                CircleAvatar(
+                                    radius: 34,
+                                    backgroundColor: Colors.white,
+                                    child: CachedNetworkImage(
+                                      imageUrl: image ?? "",
+                                      placeholder: (context, url) =>
+                                          SpinKitPulse(
+                                        itemBuilder:
+                                            (BuildContext context, int index) {
+                                          return DecoratedBox(
+                                            decoration: BoxDecoration(
+                                              color: index.isEven
+                                                  ? APIService.appPrimaryColor
+                                                  : APIService
+                                                      .appSecondaryColor,
+                                            ),
+                                          );
+                                        },
+                                      ),
+                                      errorWidget: (context, url, error) =>
+                                          const Icon(Icons.error),
+                                      height:
+                                          module.menuProperties?.iconSize ?? 28,
+                                      width:
+                                          module.menuProperties?.iconSize ?? 28,
+                                      fit: BoxFit.contain,
+                                    )),
                                 const SizedBox(
                                   height: 24,
                                 ),
