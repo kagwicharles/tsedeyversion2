@@ -96,7 +96,7 @@ class _MyBankScreenState extends State<MyBankTab> {
               const SizedBox(
                 height: 4,
               ),
-              RecentsTab()
+              const RecentsTab()
             ]));
   }
 }
