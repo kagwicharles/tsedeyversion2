@@ -2,7 +2,7 @@
 #  in the DynamicCraftPlugin
 
 urls:
-  test: false
+  test: true
   uat: http://102.218.0.4:4330 #https://uat.tsedeybank.com.et #  https://uat.craftsilicon.com
   live: https://tsedeychannels.tsedeybank.com.et:441
   tokenUrl: /ElmaV4Auth/api/auth/app #/ElmaV4Auth/api/auth/apps
